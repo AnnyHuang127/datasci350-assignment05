@@ -3,6 +3,7 @@ title: "DATASCI Assignment 5"
 author: Anny Huang
 date: "2026-02-25"
 format: 
+    html: default
     pdf: default
 bibliography: references.bib
 ---
@@ -12,7 +13,7 @@ bibliography: references.bib
 ```{r}
 library(tidyverse)
 library(ggplot2)
-wdi<-read.csv("/Users/annyhuang/Desktop/AH/QTM350/wdi.csv")
+wdi<-read.csv("/Users/annyhuang/Desktop/AH/QTM350/350_Assignment05/wdi.csv")
 #view(wdi)
 colnames(wdi)
 ```

@@ -4,3 +4,6 @@
 .RDS
 .DS_Store
 *_cache/
+
+/.quarto/
+**/*.quarto_ipynb
