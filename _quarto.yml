@@ -1,3 +1,6 @@
 project:
   type: website
   output-dir: docs
+  render:
+    - Assignment05.qmd
+    - Assignment05_slides.qmd
