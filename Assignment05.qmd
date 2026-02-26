@@ -1,0 +1,155 @@
+---
+title: "DATASCI Assignment 5"
+author: Anny Huang
+date: "2026-02-25"
+format: 
+    pdf: default
+bibliography: references.bib
+---
+
+## Load the dataset
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+wdi<-read.csv("/Users/annyhuang/Desktop/AH/QTM350/wdi.csv")
+#view(wdi)
+colnames(wdi)
+```
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+The dataset is derived from the World Development Indicators provided by the World Bank [@worldbank_wdi].
+
+## Exploratory Data Analysiss (Q3)
+
+### In this section, I plan to look at three key development indicators for 2022: GDP per capita, life expectancy, and unemployment rate.
+
+#### 1. GDP per Capita
+
+GDP per capita measures the average economic output per person and is often used as an indicator of a country's standard of living.
+
+```{r}
+summary(wdi$gdp_per_capita)
+
+ggplot(wdi, aes(x = gdp_per_capita)) +
+  geom_histogram(bins = 30, fill = "steelblue", color = "white") +
+  labs(
+    title = "Distribution of GDP per Capita (2022)",
+    x = "GDP per Capita",
+    y = "Number of Countries"
+  )
+```
+
+We can see that the distribution is strongly right-skewed, indicating that most countries have relatively low to middle income levels, while a small number of countries have very high GDP per capita.
+
+### 2. Life Expectancy
+
+Life expectancy represents the average number of years a newborn is expected to live under current mortality conditions.
+
+```{r}
+summary(wdi$life_expectancy)
+
+ggplot(wdi, aes(x = life_expectancy)) +
+  geom_histogram(bins = 30, fill = "darkgreen", color = "white") +
+  labs(
+    title = "Distribution of Life Expectancy (2022)",
+    x = "Life Expectancy (years)",
+    y = "Number of Countries"
+  )
+```
+
+Life expectancy appears more normally distributed compared to GDP per capita. Most countries cluster between 65 and 80 years, with fewer countries experiencing extremely low life expectancy.
+
+#### 3. Unemployment Rate
+
+The unemployment rate measures the percentage of the labor force that is without work but actively seeking employment.
+
+```{r}
+summary(wdi$unemployment_rate)
+
+ggplot(wdi, aes(x = unemployment_rate)) +
+  geom_histogram(bins = 30, fill = "orange", color = "white") +
+  labs(
+    title = "Distribution of Unemployment Rate (2022)",
+    x = "Unemployment Rate (%)",
+    y = "Number of Countries"
+  )
+```
+
+Unemployment rates vary considerably across countries. While many countries report moderate unemployment levels, a subset experiences very high unemployment, suggesting structural labor market challenges.
+
+## Relationship Between Economic and Health Outcomes (Q4)
+
+```{r}
+#| label: fig-gdp-lifeexp
+#| fig-cap: "Relationship between GDP per capita and life expectancy in 2022. Data source: World Bank WDI (sample in wdi.csv)."
+ggplot(wdi, aes(x=gdp_per_capita, y=life_expectancy)) +
+  geom_point(alpha=0.7) +
+  scale_x_log10() +
+  labs(
+    title="GDP per Capita vs Life Expectancy (2022)",
+    x="GDP per Capita (log scale)", y="Life Expectancy (years)"
+  )
+```
+
+Figure @fig-gdp-lifeexp shows that countries with higher GDP per capita tend to have higher life expectancy, with diminishing returns at the high-income end.
+
+```{r}
+#| label: fig-top-gdp
+#| fig-cap: "Top 10 countries by GDP per capita in 2022. Data source: World Bank WDI (sample in wdi.csv)."
+wdi %>%
+  filter(!is.na(gdp_per_capita)) %>%
+  arrange(desc(gdp_per_capita)) %>%
+  slice_head(n = 10) %>%
+  ggplot(aes(x = reorder(country, gdp_per_capita), y = gdp_per_capita)) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Top 10 Countries by GDP per Capita (2022)",
+    x = "Country",
+    y = "GDP per Capita"
+  )
+```
+
+Figure @fig-top-gdp presents the top 10 countries ranked by GDP per capita in 2022. The distribution highlights substantial disparities in income levels across countries. The highest-income countries significantly outperform others, indicating strong economic productivity and high standards of living. The large gaps between ranks suggest that global income distribution remains highly unequal.
+This positive association between income and life expectancy has been widely documented in the literature [@preston1975].
+
+## Highlighting key statistics & Conclusions (Q5)
+
+```{r}
+#| label: tbl-summary
+#| tbl-cap: "Key summary statistics for selected indicators (2022)."
+
+library(knitr)
+
+key_stats <- wdi %>%
+  summarise(
+    `GDP per capita (mean)` = mean(gdp_per_capita, na.rm = TRUE),
+    `GDP per capita (median)` = median(gdp_per_capita, na.rm = TRUE),
+    `Life expectancy (mean)` = mean(life_expectancy, na.rm = TRUE),
+    `Life expectancy (median)` = median(life_expectancy, na.rm = TRUE),
+    `Unemployment rate (mean)` = mean(unemployment_rate, na.rm = TRUE),
+    `Unemployment rate (median)` = median(unemployment_rate, na.rm = TRUE)
+  )
+
+kable(
+  key_stats,
+  digits = 2,
+  caption = "Key summary statistics for selected indicators (2022). Data source: World Bank WDI (sample in wdi.csv)."
+)
+
+```
+
+Table @tbl-summary summarises key descriptive statistics for selected development indicators in 2022. The mean and median GDP per capita differ substantially, indicating a right-skewed distribution driven by a small number of high-income countries. In contrast, life expectancy shows less dispersion between the mean and median, suggesting a more concentrated global distribution. Unemployment rates display moderate variation, reflecting differences in labour market conditions across countries.
+
+## Conclusion
+
+This analysis of the 2022 World Development Indicators highlights substantial variation in economic and social outcomes across countries. GDP per capita exhibits strong inequality, with a small number of high-income countries significantly outperforming others. Life expectancy appears more evenly distributed, though it remains positively associated with economic prosperity. Unemployment rates vary across countries, reflecting structural and economic differences in labour markets.
+
+Overall, the findings suggest that economic development remains closely linked to health outcomes, while disparities in income and employment conditions continue to shape global inequality patterns.
+
+## References

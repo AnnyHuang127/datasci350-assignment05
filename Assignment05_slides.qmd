@@ -1,0 +1,101 @@
+---
+title: "World Development Indicators (2022)"
+author: "Anny Huang"
+date: "2026-02-25"
+format:
+  revealjs:
+    theme: solarized
+    transition: fade
+    slide-number: true
+    chalkboard: false
+    code-fold: true
+---
+
+```{r}
+#| include: false
+library(tidyverse)
+wdi<-read_csv("wdi.csv")
+```
+
+## Motivation
+
+-   The World Development Indicators (WDI) provide a snapshot of economic and social conditions across countries.
+
+-   This presentation summarizes patterns in GDP per capita, life expectancy, and unemployment for 2022.
+
+## Data
+
+-   One-year sample (2022) with 14 indicators
+
+-   Unit of observation: country
+
+-   Source: World Bank, *World Development Indicators* (WDI)
+
+## Key Indicator 1: GDP per Capita
+```{r}
+#| echo: false
+library(ggplot2)
+ggplot(wdi, aes(x = gdp_per_capita)) +
+  geom_histogram(bins = 30) +
+  labs(
+    title = "Distribution of GDP per Capita (2022)",
+    x = "GDP per Capita",
+    y = "Number of Countries"
+  )
+```
+Takeaway: GDP per capita is strongly right-skewed, with a small number of very high-income countries.
+
+## Life Expectancy
+
+```{r}
+#| echo: false
+ggplot(wdi, aes(x = life_expectancy)) +
+  geom_histogram(bins = 30) +
+  labs(
+    title = "Distribution of Life Expectancy (2022)",
+    x = "Life Expectancy (years)",
+    y = "Number of Countries"
+  )
+```
+
+Takeaway: Life expectancy is more concentrated than GDP per capita.
+
+## GDP and Life Expectancy
+
+```{r}
+#| echo: false
+ggplot(wdi, aes(x = gdp_per_capita, y = life_expectancy)) +
+  geom_point(alpha = 0.7) +
+  scale_x_log10() +
+  labs(
+    title = "GDP per Capita vs Life Expectancy (2022)",
+    x = "GDP per Capita (log scale)",
+    y = "Life Expectancy (years)"
+  )
+```
+
+Takeaway: Higher GDP per capita is generally associated with higher life expectancy, with smaller gains at high income levels.
+
+## Unemployment Rate
+
+```{r}
+#| echo: false
+ggplot(wdi, aes(x = unemployment_rate)) +
+  geom_histogram(bins = 30) +
+  labs(
+    title = "Distribution of Unemployment Rate (2022)",
+    x = "Unemployment Rate (%)",
+    y = "Number of Countries"
+  )
+```
+
+Takeaway: Unemployment varies widely across countries.
+
+## Conclusion
+
+- GDP per capita shows large cross-country inequality.
+- Life expectancy is more evenly distributed and positively related to income.
+- Unemployment differs substantially across countries.
+
+Next step: Extend this analysis across multiple years to study trends.
+
